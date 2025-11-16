@@ -4,6 +4,9 @@ import { getMediaItems } from "@/lib/cloudinary";
 import { HomeIcon } from "lucide-react";
 import Link from "next/link";
 
+// Refresh media data periodically so new uploads appear without a rebuild
+export const revalidate = 60;
+
 export default async function MediaPage() {
   const mediaItems = await getMediaItems();
 
