@@ -12,6 +12,8 @@ export function PerformanceList({
   pastGigs,
   contactEmail,
 }: PerformanceListProps) {
+  console.log("upcomingGigs", upcomingGigs);
+  console.log("pastGigs", pastGigs);
   return (
     <>
       {/* Upcoming section with prominent styling */}
