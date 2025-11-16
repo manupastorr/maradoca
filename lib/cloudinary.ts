@@ -29,22 +29,24 @@ export async function getPressKitImages(): Promise<PressKitImagesResponse> {
           Authorization: `Basic ${btoa(
             process.env.CLOUDINARY_API_KEY +
               ":" +
-              process.env.CLOUDINARY_API_SECRET,
+              process.env.CLOUDINARY_API_SECRET
           )}`,
         },
+        // Avoid caching so new uploads show up immediately
+        cache: "no-store",
         body: JSON.stringify({
           expression: "folder:maradoca/press-kit",
           with_field: "tags",
           max_results: 500,
         }),
-      },
+      }
     );
 
     const data = await response.json();
 
     // Create version hash from all tags
     const versionHash = hashCode(
-      data.resources.flatMap((r: any) => r.tags || []).join("|"),
+      data.resources.flatMap((r: any) => r.tags || []).join("|")
     );
 
     return {
@@ -83,16 +85,18 @@ export async function getMediaItems(): Promise<MediaItem[]> {
           Authorization: `Basic ${btoa(
             process.env.CLOUDINARY_API_KEY +
               ":" +
-              process.env.CLOUDINARY_API_SECRET,
+              process.env.CLOUDINARY_API_SECRET
           )}`,
         },
+        // Avoid caching so new uploads show up immediately
+        cache: "no-store",
         body: JSON.stringify({
           expression:
             "folder:maradoca/gallery/performance/* OR folder:maradoca/gallery/artistpic/*",
           with_field: "tags",
           max_results: 500,
         }),
-      },
+      }
     );
 
     const data = await response.json();

@@ -4,8 +4,8 @@ import { getMediaItems } from "@/lib/cloudinary";
 import { HomeIcon } from "lucide-react";
 import Link from "next/link";
 
-// Refresh media data periodically so new uploads appear without a rebuild
-export const revalidate = 60;
+// Always render on the server so new Cloudinary uploads appear immediately
+export const dynamic = "force-dynamic";
 
 export default async function MediaPage() {
   const mediaItems = await getMediaItems();
