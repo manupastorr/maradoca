@@ -8,7 +8,7 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { ChevronLeft, ChevronRight, Download, Loader2, X } from "lucide-react";
 import { CldImage } from "next-cloudinary";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MediaItem } from "./types";
 
 const cld = new Cloudinary({
@@ -18,18 +18,17 @@ const cld = new Cloudinary({
 });
 
 type MediaModalProps = {
-  item: MediaItem | null;
+  item: MediaItem;
   onClose: () => void;
   items: MediaItem[];
 };
 
 export default function MediaModal({ item, items, onClose }: MediaModalProps) {
-  const [currentItem, setCurrentItem] = useState<MediaItem | null>(item);
+  const [currentItemId, setCurrentItemId] = useState(item.id);
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    setCurrentItem(item);
-  }, [item]);
+  const currentItem = useMemo(() => {
+    return items.find((candidate) => candidate.id === currentItemId) ?? item;
+  }, [currentItemId, item, items]);
 
   const currentIndex = currentItem
     ? items.findIndex((i) => i.id === currentItem.id)
@@ -37,13 +36,13 @@ export default function MediaModal({ item, items, onClose }: MediaModalProps) {
 
   const handleNext = useCallback(() => {
     if (currentIndex < items.length - 1) {
-      setCurrentItem(items[currentIndex + 1]);
+      setCurrentItemId(items[currentIndex + 1].id);
     }
   }, [currentIndex, items]);
 
   const handlePrevious = useCallback(() => {
     if (currentIndex > 0) {
-      setCurrentItem(items[currentIndex - 1]);
+      setCurrentItemId(items[currentIndex - 1].id);
     }
   }, [currentIndex, items]);
 
@@ -62,7 +61,6 @@ export default function MediaModal({ item, items, onClose }: MediaModalProps) {
   }, [handleNext, handlePrevious, onClose]);
 
   const handleDownload = async () => {
-    if (!currentItem) return;
     const response = await fetch(
       `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/` +
         `${currentItem.type === "video" ? "video" : "image"}/upload/` +
@@ -78,8 +76,6 @@ export default function MediaModal({ item, items, onClose }: MediaModalProps) {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
   };
-
-  if (!currentItem) return null;
 
   return (
     <Dialog open={!!currentItem} onOpenChange={() => onClose()}>

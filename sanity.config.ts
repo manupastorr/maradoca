@@ -11,6 +11,8 @@ import { deskTool } from "sanity/desk";
 // Go to https://www.sanity.io/docs/api-versioning to learn how API versioning works
 import { schema } from "./sanity/schemaTypes";
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
 export default defineConfig({
   name: "default",
   title: "Maradoca",
@@ -21,7 +23,7 @@ export default defineConfig({
     deskTool({
       defaultDocumentNode: (S) => S.document().views([S.view.form()]),
     }),
-    visionTool(),
+    ...(isDevelopment ? [visionTool()] : []),
   ],
   schema: {
     types: schema.types,

@@ -220,11 +220,14 @@ export default function MediaGallery({ items }: MediaGalleryProps) {
         </AnimatePresence>
       </motion.div>
 
-      <MediaModal
-        item={selectedItem}
-        items={getFilteredItems()}
-        onClose={() => setSelectedItem(null)}
-      />
+      {selectedItem ? (
+        <MediaModal
+          key={selectedItem.id}
+          item={selectedItem}
+          items={getFilteredItems()}
+          onClose={() => setSelectedItem(null)}
+        />
+      ) : null}
     </div>
   );
 }

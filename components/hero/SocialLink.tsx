@@ -1,4 +1,4 @@
-import { Instagram, LucideIcon, Mail } from "lucide-react";
+import { Camera, LucideIcon, Mail } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,7 +11,7 @@ type SocialLinkProps = {
 
 // Map of icon names to Lucide components
 const iconMap: Record<string, LucideIcon> = {
-  Instagram: Instagram,
+  Instagram: Camera,
   Mail: Mail,
 };
 

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SocialLinks } from "@/types/press-kit";
-import { GlobeIcon, InstagramIcon, MailIcon, MusicIcon } from "lucide-react";
+import { CameraIcon, GlobeIcon, MailIcon, MusicIcon } from "lucide-react";
 
 type ConnectCardProps = {
   socialLinks: SocialLinks;
@@ -34,7 +34,7 @@ export function ConnectCard({ socialLinks }: ConnectCardProps) {
                 rel="noopener noreferrer"
                 className="flex items-center text-gray-400 hover:text-white transition-colors group"
               >
-                <InstagramIcon className="mr-3 h-5 w-5 group-hover:text-[#ff5500]" />
+                <CameraIcon className="mr-3 h-5 w-5 group-hover:text-[#ff5500]" />
                 <span className="font-light">@maradoca</span>
               </a>
             </div>

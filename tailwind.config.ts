@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -36,6 +36,7 @@ const config = {
         "4xl": ["2.25rem", { lineHeight: "2.5rem" }],
         "5xl": ["3rem", { lineHeight: "1.16" }],
         "6xl": ["3.75rem", { lineHeight: "1.12" }],
+        "7xl": ["4.5rem", { lineHeight: "1" }],
       },
       fontWeight: {
         light: "300",

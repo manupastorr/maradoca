@@ -1,3 +1,5 @@
+@config "../tailwind.config.ts";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -67,7 +69,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
   html {
@@ -77,12 +79,20 @@
   }
 
   body {
-    @apply bg-background text-foreground font-normal text-base antialiased;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Typography Scale */
   .brand-title {
-    @apply font-display text-5xl md:text-7xl;
+    font-family: var(--font-display);
+    font-size: 3rem;
+    line-height: 1.16;
     font-weight: 500;
     letter-spacing: 0.15em;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
@@ -91,61 +101,133 @@
 
   h1,
   .h1 {
-    @apply font-display text-4xl font-semibold tracking-tight md:text-5xl;
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    letter-spacing: -0.025em;
   }
 
   h2,
   .h2 {
-    @apply font-display text-3xl font-semibold tracking-tight md:text-4xl;
+    font-family: var(--font-display);
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 2.25rem;
+    letter-spacing: -0.025em;
   }
 
   h3,
   .h3 {
-    @apply font-display text-2xl font-semibold tracking-tight md:text-3xl;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 2rem;
+    letter-spacing: -0.025em;
   }
 
   h4,
   .h4 {
-    @apply font-heading text-xl font-semibold tracking-tight md:text-2xl;
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+    letter-spacing: -0.025em;
   }
 
   h5,
   .h5 {
-    @apply font-heading text-lg font-semibold tracking-tight md:text-xl;
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.75rem;
+    letter-spacing: -0.025em;
   }
 
   h6,
   .h6 {
-    @apply font-heading text-base font-semibold tracking-tight md:text-lg;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.5rem;
+    letter-spacing: -0.025em;
   }
 
   /* Paragraph styles */
   p {
-    @apply text-base leading-relaxed;
+    font-size: 1rem;
+    line-height: 1.625;
   }
 
   /* Link styles */
   a {
-    @apply transition-colors duration-200;
+    transition-duration: 200ms;
+    transition-property: color, background-color, border-color,
+      text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* List styles */
   ul,
   ol {
-    @apply pl-6;
+    padding-left: 1.5rem;
   }
 
   ul {
-    @apply list-disc;
+    list-style-type: disc;
   }
 
   ol {
-    @apply list-decimal;
+    list-style-type: decimal;
   }
 
   /* Small text */
   small,
   .text-small {
-    @apply text-sm leading-normal;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 768px) {
+    .brand-title {
+      font-size: 4.5rem;
+      line-height: 1;
+    }
+
+    h1,
+    .h1 {
+      font-size: 3rem;
+      line-height: 1.16;
+    }
+
+    h2,
+    .h2 {
+      font-size: 2.25rem;
+      line-height: 2.5rem;
+    }
+
+    h3,
+    .h3 {
+      font-size: 1.875rem;
+      line-height: 2.25rem;
+    }
+
+    h4,
+    .h4 {
+      font-size: 1.5rem;
+      line-height: 2rem;
+    }
+
+    h5,
+    .h5 {
+      font-size: 1.25rem;
+      line-height: 1.75rem;
+    }
+
+    h6,
+    .h6 {
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
   }
 }

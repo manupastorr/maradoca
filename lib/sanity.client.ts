@@ -1,4 +1,4 @@
-import { createClient } from "next-sanity";
+import { createClient } from "@sanity/client";
 
 export const client = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
@@ -6,6 +6,5 @@ export const client = createClient({
   apiVersion: "2024-03-20",
   useCdn: false,
   token: process.env.SANITY_API_TOKEN,
-  withCredentials: true,
   perspective: "published",
 });

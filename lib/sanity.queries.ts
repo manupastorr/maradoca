@@ -1,4 +1,3 @@
-import { groq } from "next-sanity";
 import { client } from "./sanity.client";
 
 export async function getPerformances() {
@@ -26,7 +25,7 @@ export async function getMediaItems() {
   `);
 }
 
-export const heroQuery = groq`*[_type == "hero"][0]{
+export const heroQuery = `*[_type == "hero"][0]{
   title,
   subtitle,
   backgroundVideo {

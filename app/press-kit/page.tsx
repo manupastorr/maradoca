@@ -8,17 +8,27 @@ import { Button } from "@/components/ui/button";
 import { getPressKitImages } from "@/lib/cloudinary";
 import { sortPerformances } from "@/lib/date-utils";
 import { pressKitQuery } from "@/lib/sanity.queries";
-import { sanityFetch, SanityLive } from "@/sanity/lib/live";
-import { Track } from "@/types/press-kit";
+import { client } from "@/sanity/lib/client";
+import { Performance, SocialLinks, Track } from "@/types/press-kit";
 import { ArrowRight, HomeIcon } from "lucide-react";
 import Link from "next/link";
 
 export const revalidate = 0; // Disable periodic revalidation
 export const dynamic = "force-dynamic";
 
+type PressKitData = {
+  about: {
+    description: string;
+    genres: string[];
+  };
+  performances: Performance[];
+  featuredTracks: Track[];
+  socialLinks: SocialLinks;
+};
+
 export default async function PressKitPage() {
   const { images: pressKitImages, version } = await getPressKitImages();
-  const { data: pressKitData } = await sanityFetch({ query: pressKitQuery });
+  const pressKitData = await client.fetch<PressKitData>(pressKitQuery);
 
   // Helper functions for image filtering
   const hasMainPortraitTag = (image: { tags: string[] }) =>
@@ -44,7 +54,6 @@ export default async function PressKitPage() {
 
   return (
     <>
-      <SanityLive />
       <div className="min-h-screen bg-[#0B1120] text-gray-100" role="main">
         {/* Floating Back Button with improved accessibility */}
         <Link

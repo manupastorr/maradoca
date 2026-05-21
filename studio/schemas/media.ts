@@ -1,4 +1,4 @@
-export default {
+const media = {
   name: "media",
   title: "Media",
   type: "document",
@@ -37,3 +37,5 @@ export default {
     },
   ],
 };
+
+export default media;

@@ -1,22 +1,30 @@
-import { NextResponse } from 'next/server';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag } from "next/cache";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
-  const authHeader = request.headers.get('authorization');
-  
-  // Verify webhook secret
-  if (authHeader !== `Bearer ${process.env.CLOUDINARY_WEBHOOK_SECRET}`) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const webhookSecret = process.env.CLOUDINARY_WEBHOOK_SECRET;
+
+  if (!webhookSecret) {
+    return NextResponse.json(
+      { error: "Webhook secret is not configured" },
+      { status: 500 }
+    );
+  }
+
+  const authHeader = request.headers.get("authorization");
+
+  if (authHeader !== `Bearer ${webhookSecret}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    // Revalidate press kit images
-    revalidateTag('press-kit-images');
-    
+    revalidateTag("press-kit-images", "max");
+    revalidateTag("media-items", "max");
+
     return NextResponse.json({ revalidated: true });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to revalidate' },
+      { error: "Failed to revalidate" },
       { status: 500 }
     );
   }
