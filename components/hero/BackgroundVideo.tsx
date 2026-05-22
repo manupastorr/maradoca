@@ -3,7 +3,8 @@ import { AdvancedVideo } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { Volume2, VolumeX } from "lucide-react";
-import { memo } from "react";
+import Image from "next/image";
+import { memo, useEffect, useState } from "react";
 
 const cld = new Cloudinary({
   cloud: {
@@ -18,59 +19,100 @@ type VideoProps = {
   mobileVideoId?: string;
 };
 
-// Memoized Desktop Video Component
-const MemoizedDesktopVideo = memo(function DesktopVideo({
-  videoId,
-}: {
+function getPosterUrl(videoId: string, width: number, height: number) {
+  return `https://res.cloudinary.com/dgydlubmz/video/upload/so_1,c_fill,w_${width},h_${height},q_auto,f_jpg/${videoId}.jpg`;
+}
+
+type HeroVideoProps = {
   videoId?: string;
-}) {
+  className: string;
+  width: number;
+  height: number;
+  priority?: boolean;
+};
+
+function HeroPoster({
+  videoId,
+  className,
+  width,
+  height,
+  priority = false,
+}: HeroVideoProps) {
   if (!videoId) return null;
 
-  const video = cld.video(videoId).resize(fill());
+  return (
+    <div className={cn("absolute inset-0 overflow-clip bg-black", className)}>
+      <Image
+        src={getPosterUrl(videoId, width, height)}
+        alt=""
+        aria-hidden="true"
+        fill
+        className="object-cover"
+        priority={priority}
+        sizes="100vw"
+      />
+    </div>
+  );
+}
+
+function HeroVideo({ videoId, className, width, height }: HeroVideoProps) {
+  const [isReady, setIsReady] = useState(false);
+
+  if (!videoId) return null;
+
+  const video = cld.video(videoId).resize(fill().width(width).height(height));
+  const posterUrl = getPosterUrl(videoId, width, height);
 
   return (
-    <div className={cn("absolute inset-0 overflow-clip", "hidden sm:block")}>
+    <div className={cn("absolute inset-0 overflow-clip bg-black", className)}>
+      <Image
+        src={posterUrl}
+        alt=""
+        aria-hidden="true"
+        fill
+        className={cn(
+          "object-cover transition-opacity duration-700",
+          isReady ? "opacity-0" : "opacity-100"
+        )}
+        priority
+        sizes="100vw"
+      />
       <AdvancedVideo
         cldVid={video}
         autoPlay
         muted
         loop
         playsInline
+        preload="auto"
+        poster={posterUrl}
+        onCanPlay={() => setIsReady(true)}
+        onPlaying={() => setIsReady(true)}
         className={cn(
-          "h-full min-w-full object-cover",
-          "sm:aspect-video sm:overflow-clip"
+          "h-full w-full object-cover transition-opacity duration-700",
+          {
+            "opacity-0": !isReady,
+            "opacity-100": isReady,
+          }
         )}
       />
     </div>
   );
-});
+}
 
-// Memoized Mobile Video Component
-const MemoizedMobileVideo = memo(function MobileVideo({
-  videoId,
-}: {
-  videoId?: string;
-}) {
-  if (!videoId) return null;
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
 
-  const video = cld.video(videoId).resize(fill());
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 640px)");
+    const update = () => setIsDesktop(query.matches);
 
-  return (
-    <div className={cn("absolute inset-0 overflow-clip", "sm:hidden")}>
-      <AdvancedVideo
-        cldVid={video}
-        autoPlay
-        muted
-        loop
-        playsInline
-        className={cn(
-          "h-full min-w-full object-cover",
-          "sm:aspect-video sm:overflow-clip"
-        )}
-      />
-    </div>
-  );
-});
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  return isDesktop;
+}
 
 const BackgroundVideo = ({
   isMuted,
@@ -78,10 +120,42 @@ const BackgroundVideo = ({
   desktopVideoId,
   mobileVideoId,
 }: VideoProps) => {
+  const isDesktop = useIsDesktop();
+  const activeVideoId =
+    isDesktop === false
+      ? mobileVideoId || desktopVideoId
+      : desktopVideoId || mobileVideoId;
+  const activeWidth = isDesktop === false && mobileVideoId ? 720 : 1920;
+  const activeHeight = isDesktop === false && mobileVideoId ? 1280 : 1080;
+
   return (
     <>
-      <MemoizedDesktopVideo videoId={desktopVideoId} />
-      <MemoizedMobileVideo videoId={mobileVideoId} />
+      {isDesktop === null ? (
+        <>
+          <HeroPoster
+            videoId={desktopVideoId}
+            className="hidden sm:block"
+            width={1920}
+            height={1080}
+            priority
+          />
+          <HeroPoster
+            videoId={mobileVideoId}
+            className="sm:hidden"
+            width={720}
+            height={1280}
+            priority
+          />
+        </>
+      ) : (
+        <HeroVideo
+          key={activeVideoId}
+          videoId={activeVideoId}
+          className="block"
+          width={activeWidth}
+          height={activeHeight}
+        />
+      )}
       <Overlay />
       <UnmuteButton isMuted={isMuted} onToggle={onToggleMute} />
       {/* Add a hidden video element to control mute state */}
