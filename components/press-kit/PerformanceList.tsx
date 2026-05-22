@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { getDisplayLocation } from "@/lib/performance-location";
 import { Performance, VenuesByCity } from "@/types/press-kit";
 
 type PerformanceListProps = {
@@ -42,7 +43,12 @@ export function PerformanceList({
                   <h4 className="font-medium text-white group-hover:text-[#ff5500] transition-colors">
                     {gig.venue}
                   </h4>
-                  <p className="text-sm text-gray-400">{gig.location}</p>
+                  {(() => {
+                    const location = getDisplayLocation(gig);
+                    return location ? (
+                      <p className="text-sm text-gray-400">{location}</p>
+                    ) : null;
+                  })()}
                 </div>
               </div>
             ))}
@@ -73,7 +79,11 @@ export function PerformanceList({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(
               pastGigs.reduce((acc: VenuesByCity, gig: Performance) => {
-                const city = gig.location || "Other";
+                const city = getDisplayLocation(gig);
+
+                // If we don't have a credible location, we don't group it under a fake bucket.
+                if (!city) return acc;
+
                 if (!acc[city]) {
                   acc[city] = [];
                 }
