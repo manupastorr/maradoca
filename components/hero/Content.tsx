@@ -25,6 +25,10 @@ export default function Content({ heroData }: ContentProps) {
       <p className="mb-8 max-w-md text-lg font-light sm:text-xl">
         {heroData.subtitle}
       </p>
+      <p className="mb-8 max-w-lg text-sm font-light text-white/80 sm:text-base">
+        Melodic house & techno DJ in Leipzig creating immersive electronic
+        journeys for clubs, festivals, and dancefloors.
+      </p>
       <SocialLinks links={heroData.socialLinks} />
       <div className="mt-6">
         <Link href="/press-kit" passHref>

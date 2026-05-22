@@ -1,7 +1,5 @@
 "use client";
 
-import { client } from "@/lib/sanity.client";
-import { heroQuery } from "@/lib/sanity.queries";
 import { cn } from "@/lib/utils";
 import { Space_Grotesk } from "next/font/google";
 import { useEffect, useState } from "react";
@@ -13,7 +11,7 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-display",
 });
 
-type HeroData = {
+export type HeroData = {
   title: string;
   subtitle: string;
   backgroundVideo: {
@@ -27,17 +25,13 @@ type HeroData = {
   }>;
 };
 
-export default function Hero() {
-  const [isMuted, setIsMuted] = useState(true);
-  const [heroData, setHeroData] = useState<HeroData | null>(null);
+type HeroProps = {
+  initialHeroData: HeroData;
+};
 
-  useEffect(() => {
-    async function fetchHeroData() {
-      const data = await client.fetch(heroQuery);
-      setHeroData(data);
-    }
-    fetchHeroData();
-  }, []);
+export default function Hero({ initialHeroData }: HeroProps) {
+  const [isMuted, setIsMuted] = useState(true);
+  const [heroData] = useState(initialHeroData);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {

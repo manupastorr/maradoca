@@ -1,11 +1,31 @@
 import MediaGallery from "@/components/media-gallery/MediaGallery";
 import { Button } from "@/components/ui/button";
 import { getMediaItems } from "@/lib/cloudinary";
+import { absoluteUrl, site } from "@/lib/site";
 import { HomeIcon } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 // Always render on the server so new Cloudinary uploads appear immediately
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "MARADOCA Media | Electronic Journey DJ Sets & Photos",
+  },
+  description:
+    "Photos and videos from MARADOCA performances, artist shoots, and immersive electronic music journeys in Leipzig and beyond.",
+  alternates: {
+    canonical: "/media",
+  },
+  openGraph: {
+    title: "MARADOCA Media | Electronic Journey DJ Sets & Photos",
+    description:
+      "Photos and videos from MARADOCA performances, artist shoots, and immersive electronic music journeys.",
+    url: absoluteUrl("/media"),
+    images: [site.image],
+  },
+};
 
 export default async function MediaPage() {
   const mediaItems = await getMediaItems();

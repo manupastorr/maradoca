@@ -8,13 +8,33 @@ import { Button } from "@/components/ui/button";
 import { getPressKitImages } from "@/lib/cloudinary";
 import { sortPerformances } from "@/lib/date-utils";
 import { pressKitQuery } from "@/lib/sanity.queries";
+import { absoluteUrl, site } from "@/lib/site";
 import { client } from "@/sanity/lib/client";
 import { Performance, SocialLinks, Track } from "@/types/press-kit";
 import { ArrowRight, HomeIcon } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 export const revalidate = 0; // Disable periodic revalidation
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "MARADOCA Press Kit | Leipzig Melodic House & Techno DJ",
+  },
+  description:
+    "Press kit, biography, photos, featured DJ sets, and booking contact for MARADOCA, a melodic house and techno DJ based in Leipzig.",
+  alternates: {
+    canonical: "/press-kit",
+  },
+  openGraph: {
+    title: "MARADOCA Press Kit | Leipzig Melodic House & Techno DJ",
+    description:
+      "Press kit, biography, photos, featured DJ sets, and booking contact for MARADOCA.",
+    url: absoluteUrl("/press-kit"),
+    images: [site.image],
+  },
+};
 
 type PressKitData = {
   about: {
@@ -27,7 +47,7 @@ type PressKitData = {
 };
 
 export default async function PressKitPage() {
-  const { images: pressKitImages, version } = await getPressKitImages();
+  const { images: pressKitImages } = await getPressKitImages();
   const pressKitData = await client.fetch<PressKitData>(pressKitQuery);
 
   // Helper functions for image filtering
@@ -51,9 +71,60 @@ export default async function PressKitPage() {
   const { upcomingGigs, pastGigs } = sortPerformances(
     pressKitData.performances
   );
+  const pressKitJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MusicGroup",
+    name: site.name,
+    url: site.url,
+    image: site.image,
+    email: pressKitData.socialLinks.email,
+    genre: pressKitData.about.genres,
+    description: pressKitData.about.description,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Leipzig",
+      addressCountry: "DE",
+    },
+    sameAs: [
+      pressKitData.socialLinks.instagram,
+      pressKitData.socialLinks.soundcloud,
+    ],
+  };
+  const eventJsonLd = upcomingGigs.map((gig) => ({
+    "@context": "https://schema.org",
+    "@type": "MusicEvent",
+    name: `MARADOCA at ${gig.venue}`,
+    startDate: gig.date,
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: "https://schema.org/EventScheduled",
+    performer: {
+      "@type": "MusicGroup",
+      name: site.name,
+      url: site.url,
+    },
+    location: {
+      "@type": "Place",
+      name: gig.venue,
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: gig.location,
+        addressCountry: "DE",
+      },
+    },
+  }));
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pressKitJsonLd) }}
+      />
+      {eventJsonLd.length > 0 ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+        />
+      ) : null}
       <div className="min-h-screen bg-[#0B1120] text-gray-100" role="main">
         {/* Floating Back Button with improved accessibility */}
         <Link
