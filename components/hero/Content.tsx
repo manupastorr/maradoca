@@ -20,7 +20,7 @@ export default function Content({ heroData }: ContentProps) {
   if (!heroData) return null;
 
   return (
-    <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
+    <div className="relative z-10 flex min-h-[100dvh] flex-col items-center justify-center px-4 pb-8 pt-[max(3rem,env(safe-area-inset-top,0px))] text-center sm:px-6 sm:pt-[max(4rem,env(safe-area-inset-top,0px))]">
       <h1 className="brand-title mb-4">{heroData.title}</h1>
       <p className="mb-8 max-w-md text-lg font-light sm:text-xl">
         {heroData.subtitle}

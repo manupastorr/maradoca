@@ -129,7 +129,7 @@ const BackgroundVideo = ({
   const activeHeight = isDesktop === false && mobileVideoId ? 1280 : 1080;
 
   return (
-    <>
+    <div className="absolute inset-0">
       {isDesktop === null ? (
         <>
           <HeroPoster
@@ -169,7 +169,7 @@ const BackgroundVideo = ({
           videos.forEach((v) => (v.muted = isMuted));
         }}
       />
-    </>
+    </div>
   );
 };
 

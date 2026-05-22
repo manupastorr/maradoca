@@ -51,7 +51,7 @@ export default function Hero({ initialHeroData }: HeroProps) {
   return (
     <div
       className={cn(
-        "h-full w-full bg-black text-white overflow-hidden",
+        "relative min-h-[100dvh] w-full bg-black text-white overflow-hidden",
         spaceGrotesk.variable,
       )}
     >

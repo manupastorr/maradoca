@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter as FontSans, Space_Grotesk } from "next/font/google";
 import { ReactNode } from "react";
 
@@ -18,6 +18,10 @@ const fontDisplay = Space_Grotesk({
 
 type RootLayoutProps = {
   children: ReactNode;
+};
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
